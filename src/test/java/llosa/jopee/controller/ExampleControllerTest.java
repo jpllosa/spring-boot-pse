@@ -35,4 +35,10 @@ public class ExampleControllerTest {
 				.andExpect(content().string(equalTo("this is the index.html")));
 	}
 
+	@Test
+	public void getIndexFail() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_PLAIN))
+				.andExpect(status().isOk())
+				.andExpect(content().string(equalTo("make this faile. this is the index.html")));
+	}
 }
