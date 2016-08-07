@@ -6,13 +6,18 @@
   <dependencies>
   	<dependency>
   		<groupId>org.springframework.boot</groupId>
-  		<artifactId>spring-boot-starter-web</artifactId>
-  		<version>1.2.7.RELEASE</version>
+  		<artifactId>spring-boot-starter-freemarker</artifactId>
+  		<version>1.4.0.RELEASE</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-devtools</artifactId>
+  		<version>1.4.0.RELEASE</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework.boot</groupId>
   		<artifactId>spring-boot-starter-test</artifactId>
-  		<version>1.2.7.RELEASE</version>
+  		<version>1.4.0.RELEASE</version>
   		<scope>test</scope>
   	</dependency>
   </dependencies>

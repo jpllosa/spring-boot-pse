@@ -10,10 +10,7 @@ import org.springframework.context.ApplicationContext;
 public class PseInvestorApplication {
 
 	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(PseInvestorApplication.class, args);
-		Logger logger = getLogger(PseInvestorApplication.class);
-	    logger.info("PSE Investor Application started");
-
+		/*ApplicationContext ctx = */SpringApplication.run(PseInvestorApplication.class, args);
 	}
 
 	public static Logger getLogger(Class<?> clazz) {
