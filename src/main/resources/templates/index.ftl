@@ -25,7 +25,7 @@
   </div>
   <div class="form-group">
 	<label for="yearsHeld">Number of Years Invested</label>
-	<select class="form-control" type="date" id="yearsHeld" name="yearsHeld">
+	<select class="form-control" type="number" id="yearsHeld" name="yearsHeld">
 		<option value="1">1</option>
   		<option value="2">2</option>
   		<option value="3">3</option>
@@ -42,23 +42,37 @@
 	<label for="startDate">Investment Start Date</label>
 	<input class="form-control" type="date" id="startDate" name="startDate" value="yyyy-MM-dd">
   </div>
+  <h3 class="text-center">Portfolio</h3>
   <div class="table-responsive">
-  	<h3 class="text-center">Portfolio</h3>
-	  <table class="table; table-bordered; table-striped">
+	  <table class="table table-bordered table-striped table-hover">
 	    <thead>
 	      <tr>
-	        <th>Stock Symbol</th>
-	        <th>Stock Name</th>
-	        <th>Shares</th>
-	        <th>Total Cost</th>
+	        <th class="col-md-2">Stock Symbol</th>
+	        <th class="col-md-6">Stock Name</th>
+	        <th class="col-md-2">Shares</th>
+	        <th class="col-md-2">Total Cost</th>
 	      </tr>
 	    </thead>
-	    <tbody>
+	    <tbody id="tableBody">
 	      <tr>
-	        <td>XXXX</td>
-	        <td>XXXX Corp.</td>
-	        <td>100</td>
-	        <td>100.00</td>
+	        <td>
+	          <!-- <div class="form-group">
+				<label></label> -->
+				<select class="form-control" id="stockSymbol" name="stockSymbol" onmouseup="getStockNameBySymbol()">
+					<option value="AC">AC</option>
+			  		<option value="ALI">ALI</option>
+				</select>
+			  <!-- </div> -->
+			</td>
+	        <td id="stockName">Ayala Corp.</td>
+	        <td id="numberOfShares">
+	          <!-- <div class="form-group">
+				<label></label> -->
+				<input type="number" class="form-control" id="numberOfShares" name="numberOfShares">
+				</input>
+			  <!-- </div> -->
+	        </td>
+	        <td id="totalCost">100.00</td>
 	      </tr>
 	    </tbody>
 	  </table>
@@ -72,6 +86,14 @@ function processPortfolioSize() {
     console.log("in function processPortfolioSize");
     console.log(portfolioSize.value);
 }
+
+function getStockNameBySymbol() {
+
+	var stockSymbol = document.getElementById("stockSymbol");
+    console.log("in function getStockNameBySymbol");
+    console.log(stockSymbol.value);
+}
+
 </script>
 </body>
 </html>
