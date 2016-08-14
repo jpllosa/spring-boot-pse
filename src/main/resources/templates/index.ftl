@@ -15,7 +15,8 @@
   <p>Usage instruction here...</p>
   <div class="form-group">
   	<label for="portfolioSize">Number of Stocks in your Portfolio</label>
-  	<select class="form-control" id="portfolioSize" name="portfolioSize" onmouseup="processPortfolioSize()">
+  	<select class="form-control" id="portfolioSize" name="portfolioSize" 
+  	  onkeyup="processPortfolioSize()" onmouseup="processPortfolioSize()">
   		<option value="1">1</option>
   		<option value="2">2</option>
   		<option value="3">3</option>
@@ -25,7 +26,7 @@
   </div>
   <div class="form-group">
 	<label for="yearsHeld">Number of Years Invested</label>
-	<select class="form-control" type="number" id="yearsHeld" name="yearsHeld">
+	<select class="form-control" id="yearsHeld" name="yearsHeld">
 		<option value="1">1</option>
   		<option value="2">2</option>
   		<option value="3">3</option>
@@ -54,26 +55,27 @@
 	      </tr>
 	    </thead>
 	    <tbody id="tableBody">
-	      <tr>
-	        <td>
+	      <!-- <tr>
+	        <td>  -->
 	          <!-- <div class="form-group">
 				<label></label> -->
-				<select class="form-control" id="stockSymbol" name="stockSymbol" onmouseup="getStockNameBySymbol()">
+				<!-- <select class="form-control" id="stockSymbol" name="stockSymbol" 
+				  onkeyup="getStockNameBySymbol()"onmouseup="getStockNameBySymbol()">
 					<option value="AC">AC</option>
 			  		<option value="ALI">ALI</option>
-				</select>
+				</select> -->
 			  <!-- </div> -->
-			</td>
+			<!-- </td>
 	        <td id="stockName">Ayala Corp.</td>
-	        <td id="numberOfShares">
+	        <td id="numberOfShares"> -->
 	          <!-- <div class="form-group">
 				<label></label> -->
-				<input type="number" class="form-control" id="numberOfShares" name="numberOfShares">
-				</input>
+				<!-- <input type="number" class="form-control" id="numberOfShares" name="numberOfShares">
+				</input> -->
 			  <!-- </div> -->
-	        </td>
+	        <!-- </td>
 	        <td id="totalCost">100.00</td>
-	      </tr>
+	      </tr> -->
 	    </tbody>
 	  </table>
   </div>
@@ -82,16 +84,47 @@
 <script>
 function processPortfolioSize() {
 	// jQuery for the list of stock symbols
-	var portfolioSize = document.getElementById("portfolioSize");
-    console.log("in function processPortfolioSize");
+	//var portfolioSize = document.getElementById("portfolioSize");
+    //console.log("in function processPortfolioSize");
     console.log(portfolioSize.value);
+    var tableRows;
+    for (i = 0; i < portfolioSize.value; i++) {
+    	tableRows = tableRows + "<tr>";
+    	tableRows = tableRows + "<td>" +
+			"<select class=\"form-control\" id=\"stockSymbol\"" + i + " name=\"stockSymbol\"" + i + 
+			"onkeyup=\"getStockNameBySymbol()\" onmouseup=\"getStockNameBySymbol()\">" +
+			"<option value=\"AC\">AC</option>" +
+		  	"<option value=\"ALI\">ALI</option>" +
+			"</select>" +
+			"</td>";
+			
+		tableRows = tableRows + "<td id=\"stockName\"" + i + ">" + "Ayala Corp.</td>";
+
+		tableRows = tableRows + "<td id=\"numberOfShares\"" + i + ">" +
+        	"<input type=\"number\" class=\"form-control\" id=\"numberOfShares\"" + i +
+        	" name=\"numberOfShares\"" + i + ">"
+			"</td>";
+		
+		tableRows = tableRows + "<td id=\"totalCost\"" + i + ">100.00</td>";
+		
+    	tableRows = tableRows + "</tr>";
+	}
+    
+    $(document).ready(function(){
+		$("#tableBody").empty();
+	});
+    
+	$(document).ready(function(){
+		$("#tableBody").append(tableRows);
+	});
 }
 
 function getStockNameBySymbol() {
-
-	var stockSymbol = document.getElementById("stockSymbol");
-    console.log("in function getStockNameBySymbol");
+	//var stockSymbol = document.getElementById("stockSymbol");
+    //console.log("in function getStockNameBySymbol");
     console.log(stockSymbol.value);
+    
+	 
 }
 
 </script>
