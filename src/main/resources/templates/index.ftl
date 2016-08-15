@@ -15,8 +15,8 @@
 		<p>Usage instruction here...</p>
 		<div class="form-group">
 			<label for="portfolioSize">Number of Stocks in your Portfolio</label>
-			<select class="form-control" id="portfolioSize" name="portfolioSize"
-				onkeyup="processPortfolioSize()" onmouseup="processPortfolioSize()">
+			<select class="form-control" id="portfolioSize" name="portfolioSize" 
+				onchange="processPortfolioSize()" onclick="processPortfolioSize()">
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3">3</option>
@@ -51,7 +51,7 @@
 						<th class="col-md-2">Stock Symbol</th>
 						<th class="col-md-6">Stock Name</th>
 						<th class="col-md-2">Shares</th>
-						<th class="col-md-2">Total Cost</th>
+						<th class="col-md-2">Total Cost (PHP)</th>
 					</tr>
 				</thead>
 				<tbody id="tableBody">
@@ -76,11 +76,11 @@ function processPortfolioSize() {
 			
 		tableRows = tableRows + "<td id='stockName" + i + "'></td>";
 
-		tableRows = tableRows + "<td id='numberOfShares" + i + "'>"
+		tableRows = tableRows + "<td id='numberOfSharesTableCell" + i + "'>"
 			+ "<input type='number' class='form-control' id='numberOfShares" + i + "'"
-			+ " name='numberOfShares" + i + "'> </td>";
+			+ " name='numberOfShares" + i + "' onchange='processTotalCost(" + i + ")'> </td>";
 
-		tableRows = tableRows + "<td id='totalCost" + i + "'>100.00</td>";
+		tableRows = tableRows + "<td class='text-right' id='totalCost" + i + "'></td>";
 
 		tableRows = tableRows + "</tr>";
 	}
@@ -108,6 +108,15 @@ function getStockNameBySymbol(row) {
 
 function fetchStockSymbolAndNames() {
 	console.log("fetching stock symbol and names");
+}
+
+function processTotalCost(row) {
+	
+	$(document).ready(function() {
+		var numberOfShares = $("#numberOfShares" + row);
+		var totalCost = numberOfShares.val() * 5;
+		$("#totalCost" + row).text(totalCost.toFixed(2));
+	});
 }
 </script>
 </body>
