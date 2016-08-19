@@ -2,6 +2,8 @@ package llosa.jopee.api.rest;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,24 @@ public class PseRestApiControllerTest {
 	@Test
 	public void testGetStockNameBySymbol() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/api?symbol=AC").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().json("{symbol: 'AC', name: 'Ayala Corporation'}"));
+			.andExpect(status().isOk())
+			.andExpect(content().json("{symbol: 'AC', name: 'Ayala Corporation'}"));
+	}
+	
+	@Test
+	public void testGetAllStockNamesAndSymbols() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api/all-stock-names-and-symbols").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[16]symbol").value("URC"))
+			.andExpect(jsonPath("$[16]name").value("Universal Robina Corporation"))
+			.andExpect(jsonPath("$[3]symbol").value("BPI"))
+			.andExpect(jsonPath("$[3]name").value("Bank of the Philippine Islands"))
+			.andExpect(jsonPath("$[0]symbol").value("AC"))
+			.andExpect(jsonPath("$[0]name").value("Ayala Corporation"));
+		
+//			.andExpect(jsonPath("$..*").isArray())
+//			.andExpect(jsonPath("$..*", "{symbol: 'URC', name: 'Universal Robina Corporation'}").exists())
+//			.andExpect(jsonPath("$..*", "{symbol: 'SC', name: 'San Miguel Corporation'}").exists());
+//			.andDo(print());
 	}
 }
