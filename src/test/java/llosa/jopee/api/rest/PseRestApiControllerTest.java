@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.hamcrest.Matchers.hasSize;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,11 +43,27 @@ public class PseRestApiControllerTest {
 			.andExpect(jsonPath("$[3]symbol").value("BPI"))
 			.andExpect(jsonPath("$[3]name").value("Bank of the Philippine Islands"))
 			.andExpect(jsonPath("$[0]symbol").value("AC"))
-			.andExpect(jsonPath("$[0]name").value("Ayala Corporation"));
+			.andExpect(jsonPath("$[0]name").value("Ayala Corporation"))
+			.andDo(print());
 		
 //			.andExpect(jsonPath("$..*").isArray())
 //			.andExpect(jsonPath("$..*", "{symbol: 'URC', name: 'Universal Robina Corporation'}").exists())
 //			.andExpect(jsonPath("$..*", "{symbol: 'SC', name: 'San Miguel Corporation'}").exists());
 //			.andDo(print());
+	}
+	
+	@Test
+	public void testGetAllStockSymbols() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api/all-stock-symbols").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", hasSize(17)))
+			.andExpect(jsonPath("$[1]symbol").value("AEV"))
+			.andExpect(jsonPath("$[5]symbol").value("GLO"))
+			.andExpect(jsonPath("$[15]symbol").value("TEL"))
+			.andExpect(jsonPath("$[14]symbol").value("SMPH"))
+			.andDo(print());
+		
+//		To test size of array: jsonPath("$", hasSize(4))
+//		To count members of object: jsonPath("$.*", hasSize(4))
 	}
 }

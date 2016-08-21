@@ -64,33 +64,39 @@
 <script>
 function processPortfolioSize() {
 	// jQuery for the list of stock symbols
-
-	var tableRows;
-	for (i = 0; i < portfolioSize.value; i++) {
-		tableRows = tableRows + "<tr>";
-		tableRows = tableRows + "<td> <select class='form-control' id='stockSymbol" + i 
-			+ "' name='stockSymbol" + i + "' onkeyup='getStockNameBySymbol(" + i + ")'"
-			+ " onmouseup='getStockNameBySymbol(" + i + ")'>"
-			+ "<option value='AC'>AC</option>"
-			+ "<option value='ALI'>ALI</option> </select> </td>";
+	$(document).ready(function() {
+		$.ajax({url : "/api/all-stock-symbols"}).then(function(data) {
 			
-		tableRows = tableRows + "<td id='stockName" + i + "'></td>";
+			var tableRows;
+			for (i = 0; i < portfolioSize.value; i++) {
+				tableRows = tableRows + "<tr>";
+				tableRows = tableRows + "<td> <select class='form-control' id='stockSymbol" + i 
+					+ "' name='stockSymbol" + i + "' onkeyup='getStockNameBySymbol(" + i + ")'"
+					+ " onmouseup='getStockNameBySymbol(" + i + ")'>";
+					
+					for (x = 0; x < data.length; x++) {
+						tableRows = tableRows + "<option value='" + data[x].symbol + "'>"
+						+ data[x].symbol + "</option>";
+					}
+					//+ "<option value='AC'>AC</option>"
+					//+ "<option value='ALI'>ALI</option>"
+					
+				tableRows = tableRows + "</select> </td>";
+					
+				tableRows = tableRows + "<td id='stockName" + i + "'></td>";
 
-		tableRows = tableRows + "<td id='numberOfSharesTableCell" + i + "'>"
-			+ "<input type='number' class='form-control' id='numberOfShares" + i + "'"
-			+ " name='numberOfShares" + i + "' onchange='processTotalCost(" + i + ")'> </td>";
+				tableRows = tableRows + "<td id='numberOfSharesTableCell" + i + "'>"
+					+ "<input type='number' class='form-control' id='numberOfShares" + i + "'"
+					+ " name='numberOfShares" + i + "' onchange='processTotalCost(" + i + ")'> </td>";
 
-		tableRows = tableRows + "<td class='text-right' id='totalCost" + i + "'></td>";
+				tableRows = tableRows + "<td class='text-right' id='totalCost" + i + "'></td>";
 
-		tableRows = tableRows + "</tr>";
-	}
+				tableRows = tableRows + "</tr>";
+			}
 
-	$(document).ready(function() {
-		$("#tableBody").empty();
-	});
-
-	$(document).ready(function() {
-		$("#tableBody").append(tableRows);
+			$("#tableBody").empty();
+			$("#tableBody").append(tableRows);
+		});
 	});
 }
 
