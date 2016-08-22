@@ -6,9 +6,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
+import org.bson.BsonNumber;
 import org.bson.Document;
 import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import llosa.jopee.PseInvestorApplication;
+import llosa.jopee.model.PseEodq;
 import llosa.jopee.model.PseStock;
 
 @RestController
@@ -34,26 +38,21 @@ public class PseRestApiController {
 	
 	MongoClient mongoClient;
 	MongoDatabase db;
-	MongoCollection<BsonDocument> collection;
-	
 	
 	public PseRestApiController() {
 		mongoClient = new MongoClient();
 		db = mongoClient.getDatabase(databaseName);
-        collection = db.getCollection(stockCollection, BsonDocument.class);
-        log.info("mongodb constructed");
 	}
 	
 	@PreDestroy
 	void destroy() {
 		mongoClient.close();
-		log.info("mongodb destroyed");
 	}
 
 	@RequestMapping(value = "/api", method = RequestMethod.GET)
 	public PseStock getStockNameBySymbol(@RequestParam(value="symbol") String symbol) {
 		// lookup MongoDb here
-		
+		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
         FindIterable<BsonDocument> iterable = collection.find(
         		BsonDocument.parse("{stock_symbol: '" + symbol + "'}"));
         MongoCursor<BsonDocument> cursor = iterable.iterator();
@@ -61,7 +60,6 @@ public class PseRestApiController {
         BsonDocument doc = null;
         if (cursor.hasNext()) {
             doc = cursor.next();
-//	        doc.remove("_id");
         }
         
         cursor.close();
@@ -73,10 +71,36 @@ public class PseRestApiController {
         
         return PseStock.NULL;
 	}
+	// TODO
+	@RequestMapping(value = "/api/nearestDate/{nearestDate}", method = RequestMethod.GET)
+//	public PseEodq getNearestDate(@RequestParam(value="nearestDate") String nearestDate) {
+	public PseEodq getNearestDate(@PathVariable String nearestDate) {
+		MongoCollection<BsonDocument> collection = db.getCollection(eodqCollection, BsonDocument.class);
+        FindIterable<BsonDocument> iterable = collection.find(
+        		BsonDocument.parse("{Date: '" + nearestDate + "'}"))
+        		.sort(BsonDocument.parse("{Date:-1}"))
+        		.limit(1);
+        MongoCursor<BsonDocument> cursor = iterable.iterator();
+        
+        BsonDocument doc = null;
+        if (cursor.hasNext()) {
+            doc = cursor.next();
+        }
+        
+        cursor.close();
+        log.info("getNearestDate: " + doc);
+        if (doc != null) {
+        	return new PseEodq(doc.getString("stock_symbol").getValue(), doc.getDateTime("Date"),
+        			doc.getNumber("Open"), doc.getNumber("High"), doc.getNumber("Low"),
+        			doc.getNumber("Close"), doc.getNumber("Volume"));
+        }
+        
+        return PseEodq.NULL;
+	}
 	
 	@RequestMapping(value = "/api/all-stock-names-and-symbols", method = RequestMethod.GET)
 	public List<PseStock> getAllStockNamesAndSymbols() {
-		
+		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
         FindIterable<BsonDocument> iterable = collection.find(BsonDocument.parse("{}"))
         		.sort(new Document("stock_symbol", 1));
         MongoCursor<BsonDocument> cursor = iterable.iterator();
@@ -96,7 +120,7 @@ public class PseRestApiController {
 	
 	@RequestMapping(value = "/api/all-stock-symbols", method = RequestMethod.GET)
 	public List<PseStock> getAllStockSymbols() {
-		
+		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
         FindIterable<BsonDocument> iterable = collection.find(BsonDocument.parse("{}, {stock_symbol:1}"))
         		.sort(new Document("stock_symbol", 1));
         MongoCursor<BsonDocument> cursor = iterable.iterator();

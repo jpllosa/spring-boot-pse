@@ -5,10 +5,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="datepicker/css/datepicker.css">
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script	src="datepicker/js/bootstrap-datepicker.js"></script>
 </head>
-<body onload="fetchStockSymbolAndNames()">
+<body onload="getStockSymbolAndNames()">
 	<div class="container">
 		<h1 class="text-center">${title}</h1>
 		<p>Description here...</p>
@@ -39,10 +41,17 @@
 				<option value="10">10</option>
 			</select>
 		</div>
+		<!-- 
+		<div class="well">
+            <input type="text" class="span2" value="2012-02-16" id="dp1" >
+          </div>
+		 --> 
 		<div class="form-group">
-			<label for="startDate">Investment Start Date</label>
-			<input class="form-control" type="date" id="startDate" name="startDate" value="yyyy-MM-dd">
+			<label for="startDate">Investment Start Date (2005-01-02)</label>
+			<input class="form-control" type="text" id="datePicker" name="startDate" value="2005-01-02"
+			onchange="getNearestDate()"> <!-- getNearestDate not needed -->
 		</div>
+		
 		<h3 class="text-center">Portfolio</h3>
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped table-hover">
@@ -112,8 +121,25 @@ function getStockNameBySymbol(row) {
 	});
 }
 
-function fetchStockSymbolAndNames() {
+function getNearestDate() {
+	
+	$(document).ready(function() {
+		var startDate = $("#datePicker");
+		console.log("startDate: " + startDate.val());
+		/* $.ajax({url : "/api?nearestDate=" + startDate.val()}).then(function(data) {
+			$("#startDate" + row).text(data.date);
+		}); */
+
+	});
+}
+
+function getStockSymbolAndNames() {
 	console.log("fetching stock symbol and names");
+    
+	$("#datePicker").datepicker({format: 'yyyy-mm-dd'}).on("changeDate", function(ev) {
+		//console.log("ev.date: " + $("#datePicker").val())
+		getNearestDate();
+	});
 }
 
 function processTotalCost(row) {
