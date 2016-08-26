@@ -1,5 +1,6 @@
 package llosa.jopee.api.rest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import llosa.jopee.model.PseEodq;
 import llosa.jopee.model.PseStock;
 
 @RestController
+@RequestMapping("/api")
 public class PseRestApiController {
 	
 	private final String databaseName    = "philippine_stock_exchange";
@@ -49,7 +51,8 @@ public class PseRestApiController {
 		mongoClient.close();
 	}
 
-	@RequestMapping(value = "/api", method = RequestMethod.GET)
+	// trying out @RequestParam but this should be better with @PathVariable
+	@RequestMapping(method = RequestMethod.GET)
 	public PseStock getStockNameBySymbol(@RequestParam(value="symbol") String symbol) {
 		// lookup MongoDb here
 		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
@@ -71,14 +74,13 @@ public class PseRestApiController {
         
         return PseStock.NULL;
 	}
-	// TODO
-	@RequestMapping(value = "/api/nearestDate/{nearestDate}", method = RequestMethod.GET)
-//	public PseEodq getNearestDate(@RequestParam(value="nearestDate") String nearestDate) {
-	public PseEodq getNearestDate(@PathVariable String nearestDate) {
+	
+	@RequestMapping(value = "/startDate/{startDate}", method = RequestMethod.GET)
+	public PseEodq getNearestDate(@PathVariable String startDate) {
 		MongoCollection<BsonDocument> collection = db.getCollection(eodqCollection, BsonDocument.class);
+		LocalDate localDate = LocalDate.parse(startDate);
         FindIterable<BsonDocument> iterable = collection.find(
-        		BsonDocument.parse("{Date: '" + nearestDate + "'}"))
-        		.sort(BsonDocument.parse("{Date:-1}"))
+        		BsonDocument.parse("{'Date': ISODate('" + localDate + "T16:00:00.000Z')}"))
         		.limit(1);
         MongoCursor<BsonDocument> cursor = iterable.iterator();
         
@@ -88,17 +90,18 @@ public class PseRestApiController {
         }
         
         cursor.close();
-        log.info("getNearestDate: " + doc);
+
         if (doc != null) {
-        	return new PseEodq(doc.getString("stock_symbol").getValue(), doc.getDateTime("Date"),
+        	PseEodq temp =  new PseEodq(doc.getString("stock_symbol").getValue(), doc.getDateTime("Date"),
         			doc.getNumber("Open"), doc.getNumber("High"), doc.getNumber("Low"),
         			doc.getNumber("Close"), doc.getNumber("Volume"));
+        	return temp;
         }
         
         return PseEodq.NULL;
 	}
 	
-	@RequestMapping(value = "/api/all-stock-names-and-symbols", method = RequestMethod.GET)
+	@RequestMapping(value = "/all-stock-names-and-symbols", method = RequestMethod.GET)
 	public List<PseStock> getAllStockNamesAndSymbols() {
 		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
         FindIterable<BsonDocument> iterable = collection.find(BsonDocument.parse("{}"))
@@ -118,7 +121,7 @@ public class PseRestApiController {
         return pseStocks;
 	}
 	
-	@RequestMapping(value = "/api/all-stock-symbols", method = RequestMethod.GET)
+	@RequestMapping(value = "/all-stock-symbols", method = RequestMethod.GET)
 	public List<PseStock> getAllStockSymbols() {
 		MongoCollection<BsonDocument> collection = db.getCollection(stockCollection, BsonDocument.class);
         FindIterable<BsonDocument> iterable = collection.find(BsonDocument.parse("{}, {stock_symbol:1}"))

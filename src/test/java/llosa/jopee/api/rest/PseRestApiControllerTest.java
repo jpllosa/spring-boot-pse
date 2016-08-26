@@ -2,6 +2,9 @@ package llosa.jopee.api.rest;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.hamcrest.Matchers.hasSize;
@@ -65,5 +68,24 @@ public class PseRestApiControllerTest {
 		
 //		To test size of array: jsonPath("$", hasSize(4))
 //		To count members of object: jsonPath("$.*", hasSize(4))
+	}
+	
+	@Test
+	public void testGetStartDate() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api/startDate/2005-01-02").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("date").value("2005-01-02"));
+//			.andDo(print());
+	}
+	
+	@Test
+	public void testGetStartDateThatDoesNotExist() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api/startDate/2004-01-02").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("date").value("1970-01-01"))
+			.andExpect(jsonPath("symbol").value(""))
+			.andExpect(jsonPath("close").value(0.00))
+			.andExpect(jsonPath("volume").value(0.00));
+//			.andDo(print());
 	}
 }

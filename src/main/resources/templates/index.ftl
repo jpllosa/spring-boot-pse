@@ -49,7 +49,7 @@
 		<div class="form-group">
 			<label for="startDate">Investment Start Date (2005-01-02)</label>
 			<input class="form-control" type="text" id="datePicker" name="startDate" value="2005-01-02"
-			onchange="getNearestDate()"> <!-- getNearestDate not needed -->
+			onchange="getStartDate()"> <!-- getStartDate not needed -->
 		</div>
 		
 		<h3 class="text-center">Portfolio</h3>
@@ -71,6 +71,8 @@
 	</div>
 
 <script>
+var startDate = "";
+
 function processPortfolioSize() {
 	// jQuery for the list of stock symbols
 	$(document).ready(function() {
@@ -121,14 +123,22 @@ function getStockNameBySymbol(row) {
 	});
 }
 
-function getNearestDate() {
+function getStartDate() {
 	
 	$(document).ready(function() {
 		var startDate = $("#datePicker");
 		console.log("startDate: " + startDate.val());
-		/* $.ajax({url : "/api?nearestDate=" + startDate.val()}).then(function(data) {
-			$("#startDate" + row).text(data.date);
-		}); */
+		$.ajax({url : "/api/startDate/" + startDate.val()}).then(function(data) {
+			//$("#startDate" + row).text(data.date);
+			if (data.date === "1970-01-01" && data.symbol === "" &&
+					data.close === 0.00 && data.volume === 0.00) {
+				alert("Please choose another date.  The date you have chosen does not exist in the database" + 
+						" or is not a trading day.");
+			} else {
+				console.log("valid start date: " + data.date);
+				startDate = data.date;
+			}
+		});
 
 	});
 }
@@ -138,7 +148,7 @@ function getStockSymbolAndNames() {
     
 	$("#datePicker").datepicker({format: 'yyyy-mm-dd'}).on("changeDate", function(ev) {
 		//console.log("ev.date: " + $("#datePicker").val())
-		getNearestDate();
+		getStartDate();
 	});
 }
 

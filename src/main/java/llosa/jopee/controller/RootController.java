@@ -16,7 +16,6 @@ public class RootController {
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String root(Model model) {
 		model.addAttribute("title", "PSE Investing App");
-		logger.info("getting root");
 		return "index";
 	}
 

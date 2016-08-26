@@ -2,15 +2,24 @@ package llosa.jopee.model;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 
 import org.bson.BsonDateTime;
 import org.bson.BsonNumber;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import llosa.jopee.PseInvestorApplication;
+import llosa.jopee.api.rest.PseRestApiController;
 
 // End Of Day Qoute
 public class PseEodq {
-//	{ "_id" : ObjectId("57a0b570e7d75d12d0bb89ad"), "Date" : ISODate("2005-01-02T16:
-//			00:00Z"), "Open" : 163.546, "High" : 170.979, "Low" : 163.546, "Close" : 170.979
-//			, "Volume" : 383096.886885712, "stock_symbol" : "AC" }
+	
 	public static final PseEodq NULL = new PseEodq();
 	
 	private final String symbol;
@@ -21,12 +30,21 @@ public class PseEodq {
 	private final BigDecimal close;
 	private final BigDecimal volume;
 	
+	@JsonIgnore
 	private final MathContext mathContext = new MathContext(2);
+	
+	@JsonIgnore
+	Logger log = PseInvestorApplication.getLogger(PseEodq.class);
 	
 	public PseEodq(String symbol, BsonDateTime dateTime, BsonNumber open, BsonNumber high,
 			BsonNumber low, BsonNumber close, BsonNumber volume) {
 		this.symbol = symbol;
-		this.date = new java.sql.Date(dateTime.getValue());
+		Instant instant = Instant.ofEpochMilli(dateTime.getValue());
+		log.info("PseEodq: " + instant);
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/London"));
+		log.info("localDateTime: " + localDateTime);
+
+		this.date = java.sql.Date.valueOf(localDateTime.toLocalDate());
 		this.open = new BigDecimal(open.doubleValue(), mathContext);
 		this.high = new BigDecimal(open.doubleValue(), mathContext);
 		this.low = new BigDecimal(open.doubleValue(), mathContext);
