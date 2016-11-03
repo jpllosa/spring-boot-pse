@@ -4,12 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
-import org.bson.BsonNumber;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -140,4 +137,30 @@ public class PseRestApiController {
         return pseStocks;
 	}
 
+	@RequestMapping(value = "/closingPrice/{date}/{stockSymbol}", method = RequestMethod.GET)
+	public PseEodq getClosingPrice(@PathVariable String date, @PathVariable String stockSymbol) {
+		MongoCollection<BsonDocument> collection = db.getCollection(eodqCollection, BsonDocument.class);
+		LocalDate localDate = LocalDate.parse(date);
+        FindIterable<BsonDocument> iterable = collection.find(
+        		BsonDocument.parse("{'Date': ISODate('" + localDate + "T16:00:00.000Z'), "
+        				+ "'stock_symbol': '" + stockSymbol + "'}"))
+        		.limit(1);
+        MongoCursor<BsonDocument> cursor = iterable.iterator();
+        
+        BsonDocument doc = null;
+        if (cursor.hasNext()) {
+            doc = cursor.next();
+        }
+        
+        cursor.close();
+
+        if (doc != null) {
+        	PseEodq temp =  new PseEodq(doc.getString("stock_symbol").getValue(), doc.getDateTime("Date"),
+        			doc.getNumber("Open"), doc.getNumber("High"), doc.getNumber("Low"),
+        			doc.getNumber("Close"), doc.getNumber("Volume"));
+        	return temp;
+        }
+        
+        return PseEodq.NULL;
+	}
 }

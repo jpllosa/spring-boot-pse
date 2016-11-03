@@ -3,10 +3,8 @@ package llosa.jopee.model;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 
 import org.bson.BsonDateTime;
 import org.bson.BsonNumber;
@@ -15,7 +13,6 @@ import org.slf4j.Logger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import llosa.jopee.PseInvestorApplication;
-import llosa.jopee.api.rest.PseRestApiController;
 
 // End Of Day Qoute
 public class PseEodq {
@@ -46,10 +43,10 @@ public class PseEodq {
 
 		this.date = java.sql.Date.valueOf(localDateTime.toLocalDate());
 		this.open = new BigDecimal(open.doubleValue(), mathContext);
-		this.high = new BigDecimal(open.doubleValue(), mathContext);
-		this.low = new BigDecimal(open.doubleValue(), mathContext);
-		this.close = new BigDecimal(open.doubleValue(), mathContext);
-		this.volume = new BigDecimal(open.doubleValue(), mathContext);
+		this.high = new BigDecimal(high.doubleValue(), mathContext);
+		this.low = new BigDecimal(low.doubleValue(), mathContext);
+		this.close = new BigDecimal(""+close.doubleValue());
+		this.volume = new BigDecimal(volume.doubleValue(), mathContext);
 	}
 
 	public PseEodq() {

@@ -3,8 +3,6 @@ package llosa.jopee.api.rest;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.hamcrest.Matchers.hasSize;
@@ -86,6 +84,15 @@ public class PseRestApiControllerTest {
 			.andExpect(jsonPath("symbol").value(""))
 			.andExpect(jsonPath("close").value(0.00))
 			.andExpect(jsonPath("volume").value(0.00));
+//			.andDo(print());
+	}
+	
+	@Test
+	public void testGetClosingPrice() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api/closingPrice/2016-06-29/MBT").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("date").value("2016-06-29"))
+			.andExpect(jsonPath("close").value(90.35));
 //			.andDo(print());
 	}
 }
