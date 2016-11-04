@@ -156,8 +156,12 @@ function processTotalCost(row) {
 	
 	$(document).ready(function() {
 		var numberOfShares = $("#numberOfShares" + row);
-		var totalCost = numberOfShares.val() * 5;
-		$("#totalCost" + row).text(totalCost.toFixed(2));
+		var stockSymbol = $("#stockSymbol" + row);
+		var startDate = $("#datePicker");
+		$.ajax({url : "/api/closingPrice/" + startDate.val() + "/"+ stockSymbol.val()}).then(function(data) {
+			var totalCost = numberOfShares.val() * data.close;
+			$("#totalCost" + row).text(totalCost.toFixed(2));
+		});
 	});
 }
 </script>
