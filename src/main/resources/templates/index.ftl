@@ -41,11 +41,7 @@
 				<option value="10">10</option>
 			</select>
 		</div>
-		<!-- 
-		<div class="well">
-            <input type="text" class="span2" value="2012-02-16" id="dp1" >
-          </div>
-		 --> 
+		
 		<div class="form-group">
 			<label for="startDate">Investment Start Date (2005-01-02)</label>
 			<input class="form-control" type="text" id="datePicker" name="startDate" value="2005-01-02"
@@ -67,6 +63,9 @@
 
 				</tbody>
 			</table>
+			<p class="col-md-8"></p>
+			<button class="col-md-2 text-center btn btn-primary" onclick="processSumOfCost()">Sum up</button>
+			<p id="sumOfCost" class="col-md-2 text-right"></p>
 		</div>
 	</div>
 
@@ -107,6 +106,7 @@ function processPortfolioSize() {
 
 			$("#tableBody").empty();
 			$("#tableBody").append(tableRows);
+			$("#sumOfCost").empty();
 		});
 	});
 }
@@ -160,9 +160,32 @@ function processTotalCost(row) {
 		var startDate = $("#datePicker");
 		$.ajax({url : "/api/closingPrice/" + startDate.val() + "/"+ stockSymbol.val()}).then(function(data) {
 			var totalCost = numberOfShares.val() * data.close;
-			$("#totalCost" + row).text(totalCost.toFixed(2));
+			$("#totalCost" + row).text(numberWithCommas(totalCost.toFixed(2)));
 		});
+
 	});
+}
+
+function processSumOfCost() {
+	
+	$(document).ready(function() {
+		var rows = $("#tableBody").children();		
+		var totalSumOfCost = 0.00;
+		
+		for (i = 0; i < rows.length; i++) {
+			totalSumOfCost = totalSumOfCost + Number($("#totalCost" + i).text().replace(",",""));
+		}
+		
+		$("#sumOfCost").text(numberWithCommas(totalSumOfCost.toFixed(2)));
+		
+		if (totalSumOfCost > 0) {
+			console.log("show graph and profit/loss");
+		}
+	});
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 </script>
 </body>
