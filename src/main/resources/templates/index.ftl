@@ -6,9 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="datepicker/css/datepicker.css">
-<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script	src="datepicker/js/bootstrap-datepicker.js"></script>
+
 </head>
 <body onload="getStockSymbolAndNames()">
 	<div class="container">
@@ -68,6 +66,10 @@
 			<p id="sumOfCost" class="col-md-2 text-right"></p>
 		</div>
 	</div>
+	
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script	src="datepicker/js/bootstrap-datepicker.js"></script>
 
 <script>
 var startDate = "";
@@ -82,7 +84,7 @@ function processPortfolioSize() {
 				tableRows = tableRows + "<tr>";
 				tableRows = tableRows + "<td> <select class='form-control' id='stockSymbol" + i 
 					+ "' name='stockSymbol" + i + "' onkeyup='getStockNameBySymbol(" + i + ")'"
-					+ " onmouseup='getStockNameBySymbol(" + i + ")'>";
+					+ " onmouseup='getStockNameBySymbol(" + i + ")' onchange='processTotalCost(" + i + ")'>";
 					
 					for (x = 0; x < data.length; x++) {
 						tableRows = tableRows + "<option value='" + data[x].symbol + "'>"
