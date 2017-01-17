@@ -194,7 +194,7 @@ function processSumOfCost() {
 }
 
 function createChart() {
-	
+	/*
 	new Morris.Area({
 	  // ID of the element in which to draw the chart.
 	  element: 'myfirstchart',
@@ -215,7 +215,49 @@ function createChart() {
 	  // chart.
 	  labels: ['Value']
 	});
+	*/
 	
+	new Morris.Area({
+		  // ID of the element in which to draw the chart.
+		  element: 'myfirstchart',
+		  // Chart data records -- each entry in this array corresponds to a point on
+		  // the chart.
+		  data: getData(),
+		  // The name of the data record attribute that contains x-values.
+		  xkey: 'year',
+		  // A list of names of data record attributes that contain y-values.
+		  ykeys: ['value'],
+		  // Labels for the ykeys -- will be displayed when you hover over the
+		  // chart.
+		  labels: ['Value']
+		});
+}
+
+function getData() {
+	//TODO: ajax call here to get dat values
+	var data = [];
+	var yr, val;
+	yr = 2000;
+	val = 10;
+	for (i = 0; i < 5; i++) {
+		data[i] = {year: yr.toString(), value: val};
+		yr++;
+		val++;
+	}
+	
+	for (i = 0; i < 5; i++) {
+		console.log('year:' + data[i].year + ' ' + 'value:' + data[i].value);
+		
+	}
+	
+	return data;
+	/*[
+		    { year: '2008', value: 20 },
+		    { year: '2009', value: 10 },
+		    { year: '2010', value: 5 },
+		    { year: '2011', value: 5 },
+		    { year: '2012', value: 20 }
+		  ];*/
 }
 
 function numberWithCommas(x) {
