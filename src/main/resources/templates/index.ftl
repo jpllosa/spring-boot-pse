@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="datepicker/css/datepicker.css">
+<link rel="stylesheet" href="morris.js-0.5.1/morris.css">
 
 </head>
 <body onload="getStockSymbolAndNames()">
@@ -65,11 +66,16 @@
 			<button class="col-md-2 text-center btn btn-primary" onclick="processSumOfCost()">Sum up</button>
 			<p id="sumOfCost" class="col-md-2 text-right"></p>
 		</div>
+		
+		<h3 class="text-center">Investment Result</h3>
+		<div id="myfirstchart" style="height: 250px;"></div>
 	</div>
 	
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script	src="datepicker/js/bootstrap-datepicker.js"></script>
+<script	src="morris.js-0.5.1/morris.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 
 <script>
 var startDate = "";
@@ -182,8 +188,34 @@ function processSumOfCost() {
 		
 		if (totalSumOfCost > 0) {
 			console.log("show graph and profit/loss");
+			createChart();
 		}
 	});
+}
+
+function createChart() {
+	
+	new Morris.Area({
+	  // ID of the element in which to draw the chart.
+	  element: 'myfirstchart',
+	  // Chart data records -- each entry in this array corresponds to a point on
+	  // the chart.
+	  data: [
+	    { year: '2008', value: 20 },
+	    { year: '2009', value: 10 },
+	    { year: '2010', value: 5 },
+	    { year: '2011', value: 5 },
+	    { year: '2012', value: 20 }
+	  ],
+	  // The name of the data record attribute that contains x-values.
+	  xkey: 'year',
+	  // A list of names of data record attributes that contain y-values.
+	  ykeys: ['value'],
+	  // Labels for the ykeys -- will be displayed when you hover over the
+	  // chart.
+	  labels: ['Value']
+	});
+	
 }
 
 function numberWithCommas(x) {
