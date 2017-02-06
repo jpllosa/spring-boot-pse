@@ -1,5 +1,6 @@
 package llosa.jopee.api.rest;
 
+import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.bson.BsonDocument;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -162,5 +164,14 @@ public class PseRestApiController {
         }
         
         return PseEodq.NULL;
+	}
+	
+	@RequestMapping(value = "/chart-data", method = RequestMethod.POST)
+	public List<PseEodq> getChartData(@RequestBody String data) throws Exception {
+		ArrayList<PseEodq> quotes = new ArrayList<PseEodq>();
+		//{startDate: "2005-02-17", yearsHeld: 3, stockSymbols: ["SMC","MBT","GLO"]}=
+		//what's with the equal sign at the end? it's verified that it was not sent.
+		log.info("data: " + URLDecoder.decode(data, "UTF-8"));
+		return quotes;
 	}
 }

@@ -37,9 +37,9 @@ public class PseEodq {
 			BsonNumber low, BsonNumber close, BsonNumber volume) {
 		this.symbol = symbol;
 		Instant instant = Instant.ofEpochMilli(dateTime.getValue());
-		log.info("PseEodq: " + instant);
+//		log.info("PseEodq: " + instant);
 		LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Europe/London"));
-		log.info("localDateTime: " + localDateTime);
+//		log.info("localDateTime: " + localDateTime);
 
 		this.date = java.sql.Date.valueOf(localDateTime.toLocalDate());
 		this.open = new BigDecimal(open.doubleValue(), mathContext);
