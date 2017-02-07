@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -169,9 +174,21 @@ public class PseRestApiController {
 	@RequestMapping(value = "/chart-data", method = RequestMethod.POST)
 	public List<PseEodq> getChartData(@RequestBody String data) throws Exception {
 		ArrayList<PseEodq> quotes = new ArrayList<PseEodq>();
+		data = URLDecoder.decode(data, "UTF-8");
 		//{startDate: "2005-02-17", yearsHeld: 3, stockSymbols: ["SMC","MBT","GLO"]}=
 		//what's with the equal sign at the end? it's verified that it was not sent.
-		log.info("data: " + URLDecoder.decode(data, "UTF-8"));
+		log.info("before data: " + data);
+		data = data.substring(0, data.length()-1);
+		log.info("after data: " + data);
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = mapper.readValue(data, new TypeReference<Map<String, Object>>(){});
+		String startDate = (String) map.get("startDate");
+		int yearsHeld = (int) map.get("yearsHeld");
+		List<String> stockSymbols = (List<String>) map.get("stockSymbols");
+		log.info("startDate: " + startDate);
+		log.info("yearsHeld: " + yearsHeld);
+		log.info("stockSymbols: " + stockSymbols);
+		
 		return quotes;
 	}
 }

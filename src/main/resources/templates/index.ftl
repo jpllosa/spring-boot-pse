@@ -220,8 +220,8 @@ function getData() {
 	}
 	
 	var startDate = $("#datePicker");
-	var inputData = "{startDate: \""+ startDate.val() + "\", yearsHeld: " +  $("#yearsHeld").val() + ", "
-		+ "stockSymbols: [" + symbols +"]}";
+	var inputData = "{\"startDate\": \""+ startDate.val() + "\", \"yearsHeld\": " +  $("#yearsHeld").val() + ", "
+		+ "\"stockSymbols\": [" + symbols +"]}";
 
 	console.log("inputData: " + encodeURI(inputData));
 	$.post("/api/chart-data", inputData).then(function(data) {
