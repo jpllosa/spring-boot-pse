@@ -95,4 +95,16 @@ public class PseRestApiControllerTest {
 			.andExpect(jsonPath("close").value(90.35));
 //			.andDo(print());
 	}
+	
+	@Test
+	public void testGetChartData() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/api/chart-data").contentType(MediaType.APPLICATION_JSON)
+			.content("{\"startDate\": \"2005-01-12\", \"yearsHeld\": 1, \"stockSymbols\": [\"TEL\",\"SMC\"]}=")
+			.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+//			.andExpect(jsonPath("date").value("2005-01-12"))
+//			.andExpect(jsonPath("close").value(90.35))
+			.andDo(print())
+			;
+	}
 }

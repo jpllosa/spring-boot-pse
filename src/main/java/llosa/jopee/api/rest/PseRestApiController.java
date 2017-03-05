@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
@@ -27,6 +25,11 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.gte;
+import static com.mongodb.client.model.Filters.lte;
+import static com.mongodb.client.model.Filters.eq;
 
 import llosa.jopee.PseInvestorApplication;
 import llosa.jopee.model.PseEodq;
@@ -188,6 +191,37 @@ public class PseRestApiController {
 		log.info("startDate: " + startDate);
 		log.info("yearsHeld: " + yearsHeld);
 		log.info("stockSymbols: " + stockSymbols);
+		
+		//query mongodb
+		MongoCollection<BsonDocument> collection = db.getCollection(eodqCollection, BsonDocument.class);
+		LocalDate startingDate = LocalDate.parse(startDate);
+		LocalDate endingDate = startingDate.plusYears(yearsHeld);
+		
+		for (String symbol : stockSymbols) {
+//			FindIterable<BsonDocument> iterable = collection.find(
+//					and(and(gte("date", "ISODate('" + startingDate + "T16:00:00.000Z')"), 
+//						lte("date", "ISODate('" + endingDate + "T16:00:00.000Z')")),
+//					eq("stock_symbol", symbol)));
+			String start = "\"ISODate('" + startingDate + "T16:00:00.000Z')\"";
+			FindIterable<BsonDocument> iterable = collection.find(
+					BsonDocument.parse("{'Date': { $gte: ISODate('" + startingDate + "T16:00:00.000Z'), "
+							+ " $lt : ISODate('" + endingDate + "T16:00:00.000Z')}, "
+	        				+ "'stock_symbol': '" + symbol + "'}"))
+				;
+			
+	        MongoCursor<BsonDocument> cursor = iterable.iterator();
+	        
+	        BsonDocument doc = null;
+	        while (cursor.hasNext()) {
+	        	doc = cursor.next();
+	        	quotes.add(new PseEodq(doc.getString("stock_symbol").getValue(), doc.getDateTime("Date"),
+	        			doc.getNumber("Open"), doc.getNumber("High"), doc.getNumber("Low"),
+	        			doc.getNumber("Close"), doc.getNumber("Volume")));
+	        }
+	        
+	        cursor.close();
+			
+		}
 		
 		return quotes;
 	}

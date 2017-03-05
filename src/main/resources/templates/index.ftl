@@ -210,7 +210,7 @@ function createChart() {
 }
 
 function getData() {
-	//TODO: ajax call here to get dat values
+	//TODO: ajax call here to get data values
 	var symbols = "";
 	for (i = 0; i < portfolioSize.value; i++) {
 		symbols = symbols + "\"" + $("#stockSymbol" + i).val() + "\"";
