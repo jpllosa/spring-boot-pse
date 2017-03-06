@@ -186,9 +186,61 @@ function processSumOfCost() {
 		
 		if (totalSumOfCost > 0) {
 			console.log("show graph and profit/loss");
-			createChart();
+			// createChart();
+			createChart2();
 		}
 	});
+}
+
+function createChart2() {
+	var symbols = "";
+	var chartSymbols = new Array();
+	for (i = 0; i < portfolioSize.value; i++) {
+		symbols = symbols + "\"" + $("#stockSymbol" + i).val() + "\"";
+		if ((i + 1) < portfolioSize.value) {
+			symbols = symbols + ",";
+		}
+		
+		chartSymbols.push($("#stockSymbol" + i).val());
+	}
+	
+	var chartData = new Array();
+	var startDate = $("#datePicker");
+	var inputData = "{\"startDate\": \""+ startDate.val() + "\", \"yearsHeld\": " +  $("#yearsHeld").val() + ", "
+		+ "\"stockSymbols\": [" + symbols +"]}";
+
+	console.log("inputData: " + encodeURI(inputData));
+	$.post("/api/chart-data", inputData).then(function(data) {
+		alert(data[0].date + data[0].symbol + data[0].close);
+		
+		for (i = 0; i < data.length; i++) {
+			var temp = {year: data[i].date};
+			temp[data[i].symbol] = data[i].close;
+			chartData[i] = temp;
+			
+			// chartData[i] = {year: data[i].date, [`$data[0].symbol`] : data[i].close};
+		}
+		
+		alert(chartData[0].year + chartSymbols[0]);
+		alert(chartSymbols);
+		
+		new Morris.Line({
+			  // ID of the element in which to draw the chart.
+			  element: 'myfirstchart',
+			  // Chart data records -- each entry in this array corresponds to a point on
+			  // the chart.
+			  data: chartData,
+			  // The name of the data record attribute that contains x-values.
+			  xkey: 'year',
+			  // A list of names of data record attributes that contain y-values.
+			  ykeys: chartSymbols,
+			  // Labels for the ykeys -- will be displayed when you hover over the
+			  // chart.
+			  labels: chartSymbols
+			});
+		
+	});
+	
 }
 
 function createChart() {
@@ -219,33 +271,25 @@ function getData() {
 		}
 	}
 	
+	var chartData = new Array();
 	var startDate = $("#datePicker");
 	var inputData = "{\"startDate\": \""+ startDate.val() + "\", \"yearsHeld\": " +  $("#yearsHeld").val() + ", "
 		+ "\"stockSymbols\": [" + symbols +"]}";
 
 	console.log("inputData: " + encodeURI(inputData));
 	$.post("/api/chart-data", inputData).then(function(data) {
-		alert(data);
+		alert(data[0].date + data[0].symbol + data[0].close);
+		
+		for (i = 0; i < data.length; i++) {
+			chartData[i] = {year: data[i].date, value: data[i].close};
+		}
+		
 	});
 	
+	alert(chartData[0].year + chartData[0].value);
 	
+	return chartData;
 	
-	var data = [];
-	var yr, val;
-	yr = 2000;
-	val = 10;
-	for (i = 0; i < 5; i++) {
-		data[i] = {year: yr.toString(), value: val};
-		yr++;
-		val++;
-	}
-	
-	for (i = 0; i < 5; i++) {
-		console.log('year:' + data[i].year + ' ' + 'value:' + data[i].value);
-		
-	}
-	
-	return data;
 	/*[
 		    { year: '2008', value: 20 },
 		    { year: '2009', value: 10 },

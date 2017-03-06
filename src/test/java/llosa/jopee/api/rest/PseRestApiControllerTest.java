@@ -97,7 +97,7 @@ public class PseRestApiControllerTest {
 	}
 	
 	@Test
-	public void testGetChartData() throws Exception {
+	public void testGetChartData() throws Exception { //TODO: check  if json array is received
 		mvc.perform(MockMvcRequestBuilders.post("/api/chart-data").contentType(MediaType.APPLICATION_JSON)
 			.content("{\"startDate\": \"2005-01-12\", \"yearsHeld\": 1, \"stockSymbols\": [\"TEL\",\"SMC\"]}=")
 			.accept(MediaType.APPLICATION_JSON))
