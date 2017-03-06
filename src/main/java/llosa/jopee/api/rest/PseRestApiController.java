@@ -180,9 +180,7 @@ public class PseRestApiController {
 		data = URLDecoder.decode(data, "UTF-8");
 		//{startDate: "2005-02-17", yearsHeld: 3, stockSymbols: ["SMC","MBT","GLO"]}=
 		//what's with the equal sign at the end? it's verified that it was not sent.
-		log.info("before data: " + data);
 		data = data.substring(0, data.length()-1);
-		log.info("after data: " + data);
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = mapper.readValue(data, new TypeReference<Map<String, Object>>(){});
 		String startDate = (String) map.get("startDate");
@@ -197,11 +195,9 @@ public class PseRestApiController {
 		LocalDate startingDate = LocalDate.parse(startDate);
 		LocalDate endingDate = startingDate.plusYears(yearsHeld);
 		
+		long startTime = System.currentTimeMillis();
+		
 		for (String symbol : stockSymbols) {
-//			FindIterable<BsonDocument> iterable = collection.find(
-//					and(and(gte("date", "ISODate('" + startingDate + "T16:00:00.000Z')"), 
-//						lte("date", "ISODate('" + endingDate + "T16:00:00.000Z')")),
-//					eq("stock_symbol", symbol)));
 			String start = "\"ISODate('" + startingDate + "T16:00:00.000Z')\"";
 			FindIterable<BsonDocument> iterable = collection.find(
 					BsonDocument.parse("{'Date': { $gte: ISODate('" + startingDate + "T16:00:00.000Z'), "
@@ -222,6 +218,10 @@ public class PseRestApiController {
 	        cursor.close();
 			
 		}
+		
+		long endTime = System.currentTimeMillis();
+		log.info("elapsed time (sec): " + ((double)(endTime - startTime) / 1000));
+		log.info("size: " + quotes.size());
 		
 		return quotes;
 	}

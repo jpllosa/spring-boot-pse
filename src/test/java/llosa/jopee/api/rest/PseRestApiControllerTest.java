@@ -102,9 +102,10 @@ public class PseRestApiControllerTest {
 			.content("{\"startDate\": \"2005-01-12\", \"yearsHeld\": 1, \"stockSymbols\": [\"TEL\",\"SMC\"]}=")
 			.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-//			.andExpect(jsonPath("date").value("2005-01-12"))
-//			.andExpect(jsonPath("close").value(90.35))
-			.andDo(print())
+			.andExpect(jsonPath("$", hasSize(494)))
+			.andExpect(jsonPath("$[0]symbol").value("TEL"))
+			.andExpect(jsonPath("$[493]symbol").value("SMC"))
+//			.andDo(print())
 			;
 	}
 }

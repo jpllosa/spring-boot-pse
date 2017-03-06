@@ -68,7 +68,8 @@
 		</div>
 		
 		<h3 class="text-center">Investment Result</h3>
-		<div id="myfirstchart" style="height: 250px;"></div>
+		<div id="chartArea" style="height: 250px;"></div>
+		
 	</div>
 	
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -108,11 +109,13 @@ function processPortfolioSize() {
 				tableRows = tableRows + "<td class='text-right' id='totalCost" + i + "'></td>";
 
 				tableRows = tableRows + "</tr>";
+
 			}
 
 			$("#tableBody").empty();
 			$("#tableBody").append(tableRows);
 			$("#sumOfCost").empty();
+			
 		});
 	});
 }
@@ -186,13 +189,12 @@ function processSumOfCost() {
 		
 		if (totalSumOfCost > 0) {
 			console.log("show graph and profit/loss");
-			// createChart();
-			createChart2();
+			createChart();
 		}
 	});
 }
 
-function createChart2() {
+function createChart() {
 	var symbols = "";
 	var chartSymbols = new Array();
 	for (i = 0; i < portfolioSize.value; i++) {
@@ -203,7 +205,7 @@ function createChart2() {
 		
 		chartSymbols.push($("#stockSymbol" + i).val());
 	}
-	
+
 	var chartData = new Array();
 	var startDate = $("#datePicker");
 	var inputData = "{\"startDate\": \""+ startDate.val() + "\", \"yearsHeld\": " +  $("#yearsHeld").val() + ", "
@@ -211,22 +213,24 @@ function createChart2() {
 
 	console.log("inputData: " + encodeURI(inputData));
 	$.post("/api/chart-data", inputData).then(function(data) {
-		alert(data[0].date + data[0].symbol + data[0].close);
 		
-		for (i = 0; i < data.length; i++) {
-			var temp = {year: data[i].date};
-			temp[data[i].symbol] = data[i].close;
-			chartData[i] = temp;
-			
-			// chartData[i] = {year: data[i].date, [`$data[0].symbol`] : data[i].close};
+		for (x = 0; x < data.length; x++) {
+			var temp = {year: data[x].date};
+			temp[data[x].symbol] = data[x].close;
+			chartData[x] = temp;
 		}
 		
-		alert(chartData[0].year + chartSymbols[0]);
-		alert(chartSymbols);
+		/*[
+	    { year: '2008', value: 20 },
+	    { year: '2009', value: 10 },
+	    { year: '2010', value: 5 },
+	    { year: '2011', value: 5 },
+	    { year: '2012', value: 20 }
+	    ];*/
 		
 		new Morris.Line({
 			  // ID of the element in which to draw the chart.
-			  element: 'myfirstchart',
+			  element: "chartArea",
 			  // Chart data records -- each entry in this array corresponds to a point on
 			  // the chart.
 			  data: chartData,
@@ -241,62 +245,6 @@ function createChart2() {
 		
 	});
 	
-}
-
-function createChart() {
-	
-	new Morris.Area({
-		  // ID of the element in which to draw the chart.
-		  element: 'myfirstchart',
-		  // Chart data records -- each entry in this array corresponds to a point on
-		  // the chart.
-		  data: getData(),
-		  // The name of the data record attribute that contains x-values.
-		  xkey: 'year',
-		  // A list of names of data record attributes that contain y-values.
-		  ykeys: ['value'],
-		  // Labels for the ykeys -- will be displayed when you hover over the
-		  // chart.
-		  labels: ['Value']
-		});
-}
-
-function getData() {
-	//TODO: ajax call here to get data values
-	var symbols = "";
-	for (i = 0; i < portfolioSize.value; i++) {
-		symbols = symbols + "\"" + $("#stockSymbol" + i).val() + "\"";
-		if ((i + 1) < portfolioSize.value) {
-			symbols = symbols + ",";
-		}
-	}
-	
-	var chartData = new Array();
-	var startDate = $("#datePicker");
-	var inputData = "{\"startDate\": \""+ startDate.val() + "\", \"yearsHeld\": " +  $("#yearsHeld").val() + ", "
-		+ "\"stockSymbols\": [" + symbols +"]}";
-
-	console.log("inputData: " + encodeURI(inputData));
-	$.post("/api/chart-data", inputData).then(function(data) {
-		alert(data[0].date + data[0].symbol + data[0].close);
-		
-		for (i = 0; i < data.length; i++) {
-			chartData[i] = {year: data[i].date, value: data[i].close};
-		}
-		
-	});
-	
-	alert(chartData[0].year + chartData[0].value);
-	
-	return chartData;
-	
-	/*[
-		    { year: '2008', value: 20 },
-		    { year: '2009', value: 10 },
-		    { year: '2010', value: 5 },
-		    { year: '2011', value: 5 },
-		    { year: '2012', value: 20 }
-		  ];*/
 }
 
 function numberWithCommas(x) {
