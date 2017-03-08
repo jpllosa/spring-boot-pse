@@ -26,11 +26,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.gte;
-import static com.mongodb.client.model.Filters.lte;
-import static com.mongodb.client.model.Filters.eq;
-
 import llosa.jopee.PseInvestorApplication;
 import llosa.jopee.model.PseEodq;
 import llosa.jopee.model.PseStock;
@@ -198,7 +193,6 @@ public class PseRestApiController {
 		long startTime = System.currentTimeMillis();
 		
 		for (String symbol : stockSymbols) {
-			String start = "\"ISODate('" + startingDate + "T16:00:00.000Z')\"";
 			FindIterable<BsonDocument> iterable = collection.find(
 					BsonDocument.parse("{'Date': { $gte: ISODate('" + startingDate + "T16:00:00.000Z'), "
 							+ " $lt : ISODate('" + endingDate + "T16:00:00.000Z')}, "
