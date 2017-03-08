@@ -12,8 +12,15 @@
 <body onload="getStockSymbolAndNames()">
 	<div class="container">
 		<h1 class="text-center">${title}</h1>
-		<p>Description here...</p>
-		<p>Usage instruction here...</p>
+		<p>This web app will show how your chosen stock in the Philippine Stock Exchange performed if you have invested
+		for a certain number of years. The period covered is roughly from 2005-01-02 to 2016-07-27. Only a select few
+		stocks are covered and these stocks existed during the period covered. In short, this web app answers the
+		question "How much money would I have made/lost if I bought this stock and held for x years?"</p>
+		<p>You choose the the number of stocks in your portfolio first. Then choose how many years you held the chosen
+		stocks. Next, you choose the start date (i.e., the date you bought the stocks). In the portfolio table, choose
+		the stocks and enter the number of shares bought. When all your data is ready, click on <strong>Sum up</strong>. 
+		You might have to wait a few good seconds if you choose the maximum number of years and maximum number of stocks
+		for the graph to load. <strong>Reload the page to enter new data.</strong></p>
 		<div class="form-group">
 			<label for="portfolioSize">Number of Stocks in your Portfolio</label>
 			<select class="form-control" id="portfolioSize" name="portfolioSize" 
