@@ -12,6 +12,7 @@
 <body onload="getStockSymbolAndNames()">
 	<div class="container">
 		<h1 class="text-center">${title}</h1>
+		<p><strong>It's not entirely functional. The MongoDb data isn't up yet.</strong></p>
 		<p>This web app will show how your chosen stock in the Philippine Stock Exchange performed if you have invested
 		for a certain number of years. The period covered is roughly from 2005-01-02 to 2016-07-27. Only a select few
 		stocks are covered and these stocks existed during the period covered. In short, this web app answers the
