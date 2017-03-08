@@ -10,4 +10,5 @@ This is just a side project in order learn about **Spring Boot**, **MongoDb**, *
 Was able to deploy to Heroku via Heroku CLI without a Procfile. Didn't work when I tried deploying it over the web by authorizing Heroku. Couldn't do a Continuos Deployment.
 
 Access the web app here: [https://spring-boot-pse.herokuapp.com/](https://spring-boot-pse.herokuapp.com/)
+
 It's not entirely functional. The MongoDb data isn't up yet.
