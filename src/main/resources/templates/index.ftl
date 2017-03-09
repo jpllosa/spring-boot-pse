@@ -22,6 +22,9 @@
 		the stocks and enter the number of shares bought. When all your data is ready, click on <strong>Sum up</strong>. 
 		You might have to wait a few good seconds if you choose the maximum number of years and maximum number of stocks
 		for the graph to load. <strong>Reload the page to enter new data.</strong></p>
+		<div class="row">
+			<button class="col-md-2 text-center btn btn-primary col-md-offset-5" onclick="location.reload();">Reload</button>
+		</div>
 		<div class="form-group">
 			<label for="portfolioSize">Number of Stocks in your Portfolio</label>
 			<select class="form-control" id="portfolioSize" name="portfolioSize" 
